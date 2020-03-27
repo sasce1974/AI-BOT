@@ -5,14 +5,15 @@
  * Date: 3/12/2020
  * Time: 9:15 PM
  */
-
+session_start();
 if(isset($_REQUEST['error_message'])){
     $error_message = $_REQUEST['error_message'];
     $error_message = trim(filter_var($error_message, FILTER_SANITIZE_STRING));
 }else{
-    $error_message = "Oops! There was some problem. You can get back on the main page by clicking <a href='index.html'>HERE</a>";
+    $error_message = "Oops! There was some problem. You can get back on the main page by clicking <a href='index.php'>HERE</a>";
 }
 
+if(isset($_SESSION['error']) && !empty($_SESSION['error'])) $error_message = $_SESSION['error'];
 ?>
 <html lang="en">
 
@@ -20,13 +21,14 @@ if(isset($_REQUEST['error_message'])){
   <meta charset="UTF-8" />
   <title>An Error Has Occurred</title>
     <style type="text/css">
-        @color-primary: #30A9DE;
-        @color-secondary: #30A9DE;
-        @color-tertiary: #30A9DE;
-        @color-primary-light: #6AAFE6;
-        @color-primary-dark: #8EC0E4;
-        @Distance: 1000px;
-
+        * {
+            --color-primary: #30A9DE;
+            --color-secondary: #30A9DE;
+            --color-tertiary: #30A9DE;
+            --color-primary-light: #6AAFE6;
+            --color-primary-dark: #8EC0E4;
+            --Distance: 1000 px;
+        }
         body{
             overflow: hidden;
         }
@@ -58,6 +60,7 @@ if(isset($_REQUEST['error_message'])){
             max-width: 50%;
             font-size: 1.2rem;
             font-weight: lighter;
+            margin: auto;
         }
 
         .MainGraphic {
@@ -67,8 +70,8 @@ if(isset($_REQUEST['error_message'])){
         .Cog {
             width: 10rem;
             height: 10rem;
-            fill: @color-primary-light;
-            transition: easeInOutQuint();
+            fill: var(--color-primary-light);
+            transition: ease-in-out;
             animation: CogAnimation 5s infinite;
         }
 
@@ -79,7 +82,7 @@ if(isset($_REQUEST['error_message'])){
             left: 20%;
             width: 10rem;
             height: 10rem;
-            fill: @color-primary-dark;
+            fill: var(--color-primary-dark);
             animation: SpannerAnimation 4s infinite;
         }
 
@@ -87,7 +90,7 @@ if(isset($_REQUEST['error_message'])){
             position: absolute;
             width: 3rem;
             height: 3rem;
-            fill: @color-primary;
+            fill: var(--color-primary);
             left: 50%;
             top: 50%;
             transform: translate(-50%,-50%);
@@ -106,32 +109,32 @@ if(isset($_REQUEST['error_message'])){
             }
             10% {
                 transform:
-                    translate3d(-@Distance, @Distance, 1px)
+                    translate3d(- var(--Distance), var(--Distance), 1px)
                     rotate(180deg);
             }
             15% {
                 transform:
-                    translate3d(-@Distance, @Distance, 1px)
+                    translate3d(- var(--Distance), var(--Distance), 1px)
                     rotate(360deg);
             }
             20% {
                 transform:
-                    translate3d(@Distance, -@Distance, 1px)
+                    translate3d(var(--Distance), - var(--Distance), 1px)
                     rotate(180deg);
             }
             30% {
                 transform:
-                    translate3d(-@Distance, @Distance, 1px)
+                    translate3d(- var(--Distance), var(--Distance), 1px)
                     rotate(360deg);
             }
             40% {
                 transform:
-                    translate3d(@Distance, -@Distance, 1px)
+                    translate3d(var(--Distance), - var(--Distance), 1px)
                     rotate(360deg);
             }
             50% {
                 transform:
-                    translate3d(-@Distance, @Distance, 1px)
+                    translate3d(- var(--Distance), var(--Distance), 1px)
                     rotate(180deg);
             }
             100% {
@@ -161,7 +164,19 @@ if(isset($_REQUEST['error_message'])){
 An error has occurred
 </h1>
     <p class="MainDescription">
-        <?php echo $error_message; ?>
+
+        <?php
+
+        if(is_array($error_message)){
+            foreach ($error_message as $message){
+                echo $message . "<br>";
+            }
+        }else{
+            echo $error_message;
+        }
+        unset($_SESSION['error']);
+        ?>
+
     </p>
 
   </div>

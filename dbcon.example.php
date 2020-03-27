@@ -4,11 +4,11 @@
 # **** SETTINGS **** #
 
 //Errors will be emailed here:
-$contact_email = "sasce1974@gmail.com";
+$contact_email = "your_email_here@gmail.com";
 
 //Determine local or real server:
 $host = substr($_SERVER['HTTP_HOST'], 0, 5);
-if(in_array($host, array('127.0', '192.1', 'local', 'hai.t'))){
+if(in_array($host, array('127.0', '192.1', 'local'))){
     $local = true;
     $debug = true;
 }else{
@@ -17,53 +17,44 @@ if(in_array($host, array('127.0', '192.1', 'local', 'hai.t'))){
 
 //Determine location of files and URL in site
 if($local){
-    define('BASE_URI', 'C:\xampp\htdocs\hai\\');
-    define('BASE_URL', 'http://hai.test');
+    define('BASE_URI', 'C:\path\to\xampp\htdocs\project\\');
+    define('BASE_URL', 'localhost');
     define ("DBHOST", "localhost");
-    define ("DBUSER", "root");
-    define ("DBPASS", "qSmU9JdK3kdx4W2");
-    define ("DB", "hai");
+    define ("DBUSER", "user");
+    define ("DBPASS", "your_mysql_password");
+    define ("DB", "database_name");
 
     ini_set('display_errors', 1);
 }else{
 
-    define('BASE_URI', '/home/vol11_5/ezyro.com/ezyro_18927646/3delacto.com/htdocs/projects/hai/');
-    define('BASE_URL', 'https://www.3delacto.com/projects/hai');
-    define ("DBHOST", "sql307.ezyro.com");
-    define ("DBUSER", "ezyro_18927646");
-    define ("DBPASS", "Rusimka1944!");
-    define ("DB", "ezyro_18927646_hia");
+    define('BASE_URI', '/path/to/your/project/on/the/production/server/');
+    define('BASE_URL', 'www.yourdomain.com');
+    define ("DBHOST", "database-host.com");
+    define ("DBUSER", "username");
+    define ("DBPASS", "your_password");
+    define ("DB", "database_name");
 
     ini_set('display_errors', 0);
     ini_set('log_errors', 1);
 }
 
 
-function isLocal(){
-    global $local;
-    return $local;
-}
+
 
 
 //Error management
 if(!isset($debug)) $debug = false;
 
 
-if(!isset($_SESSION['error'])) $_SESSION['error'] = array();
-
 function my_error_handler($e_number, $e_message, $e_file, $e_line, $e_vars){
     global $local, $contact_email;
     //	Build	the	error	message:
     $message = "An error occurred in file " . $e_file . " on line " . $e_line . ", " . $e_message;
-    //Append $e_vars to	the	$message:
-    //$message .= print_r($e_vars, 1);
 
-    if ($local){	//	Show	the	error.
 
-        //debug_print_backtrace();
-        error_log($message);
-        $_SESSION['error'] = $message;
-        header("Location: " . BASE_URL . "/error.php");
+    if ($local){	//	Show the error message.
+
+        header("Location: " . BASE_URL . "/error.php?error_message={$message}");
         exit();
 
     }else{
@@ -82,17 +73,14 @@ function my_error_handler($e_number, $e_message, $e_file, $e_line, $e_vars){
 //	Use	my	error	handler:
 set_error_handler('my_error_handler');
 
+
 function error_message($user_message, $admin_message){
-    if(!isset($_SESSION['error'])) $_SESSION['error'] = array();
     global $debug;
     if($debug){
-        error_log($admin_message);
-        $_SESSION['error'] = $admin_message;
-        header("Location: " . BASE_URL . "/error.php");
+        header("Location: " . BASE_URL . "/error.php?error_message=" . $user_message . ". Technical info: " . $admin_message);
         exit(404);
     }else{
-        $_SESSION['error'] = $user_message;
-        header("Location: " . BASE_URL . "/error.php");
+        header("Location: " . BASE_URL . "/error.php?error_message=" . $user_message);
         exit(404);
     }
 }

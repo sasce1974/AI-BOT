@@ -1,0 +1,7 @@
+# ignore files or folders from being committed
+
+.idea
+dbcon.php
+index_old.php
+index_old.html
+hai_respond_old1.php

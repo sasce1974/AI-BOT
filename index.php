@@ -1,6 +1,10 @@
 <?php
 require_once("functions.php");
 $user = new User;
+
+//Check if the user is registered in database
+//This is needed especially for guest users that are automatically deleted after
+//24 hours, but if not been log out ny the user, they still exist in the session.
 if(!$user->checkIfUserExistInTable()){
     die(header("Location:" . BASE_URL . "/login/"));
 }

@@ -1,5 +1,5 @@
 <?php
-try{
+
 class User {
     public $id;
     public $username;
@@ -13,11 +13,18 @@ class User {
 
     public $errorType = "fatal";
 
+    private $con = null;
+
     
     function __construct() {
         if (session_id() == "") {
             session_start();
         }
+
+        $this->con = connectPDO();
+
+        if(!isset($_SESSION['error'])) $_SESSION['error'] = array();
+
         if (isset($_SESSION['isLoggedIn']) && $_SESSION['isLoggedIn'] == true) {
             $this->_initUser();
         }
@@ -29,26 +36,21 @@ class User {
         }
         $_SESSION['isLoggedIn'] = false;
         $this->isLoggedIn = false;
-        
-        $mysqli = new mysqli(DBHOST, DBUSER, DBPASS, DB);
-        if ($mysqli->connect_errno) {
-            //error_message("There is some technical problem at the moment. Please try again.", "Cannot connect to MySQL: " . $mysqli->connect_error);
-            error_log("Cannot connect to MySQL: " . $mysqli->connect_error);
-            return false;
-        }
-        $safeUser = $mysqli->real_escape_string($user);
-        $incomingPassword = $mysqli->real_escape_string($pass);
+
+
+        $safeUser = filter_var($user, FILTER_SANITIZE_STRING);
+        //$incomingPassword = $mysqli->real_escape_string($pass);
         $query = "SELECT * from user WHERE username = '{$safeUser}'";
-        if (!$result = $mysqli->query($query)) {
-            //error_message("There is no user " . $user,"Cannot retrieve account for {$user}");
+        $result = $this->con->query($query);
+        if ($result->rowCount() !== 1) {
             error_log("Cannot retrieve account for {$user}");
             return false;
         }
+
         // Will be only one row, so no while() loop needed
-        $row = $result->fetch_assoc();
+        $row = $result->fetch(PDO::FETCH_ASSOC);
         $dbPassword = $row['password'];
-        if (password_verify($incomingPassword,$dbPassword)==false) {
-            //error_message("Wrong password.", "Wrong password for {$user}");
+        if (password_verify($pass,$dbPassword)==false) {
             error_log("Passwords for {$user} don't match");
             return false;
         }
@@ -117,37 +119,39 @@ class User {
 
     } //end function logout
     
-    public function emailPass($user) {
-        $mysqli = new mysqli(DBHOST, DBUSER, DBPASS, DB);
-        if ($mysqli->connect_errno) {
-                error_log("Cannot connect to MySQL: " . $mysqli->connect_error);
-                return false;
-        }
+    public function emailPass($email) {
         // first, lookup the user to see if they exist.
-        $safeUser = $mysqli->real_escape_string($user);
-        $query = "SELECT id, username, email FROM user WHERE username = '{$safeUser}'";
-        if (!$result = $mysqli->query($query)) {
-            $_SESSION['error'][] = "Unknown Error";
+        $email = filter_var($email, FILTER_SANITIZE_STRING);
+        $query = "SELECT id, username, email FROM user WHERE email = ?";
+        $result = $this->con->prepare($query);
+        $result->execute(array($email));
+
+        if ($result->rowCount() !== 1) {
+            $_SESSION['error'][] = "User with this email not found";
             return false;
         }
-        if ($result->num_rows == 0) {
-            $_SESSION['error'][] = "User not found";
-            return false;
-        }
-        $row = $result->fetch_assoc();
+        $row = $result->fetch(PDO::FETCH_ASSOC);
         $id = $row['id'];
         $hash = uniqid("",TRUE);
-        $safeHash = $mysqli->real_escape_string($hash);
+        $safeHash = filter_var($hash, FILTER_SANITIZE_STRING);
+
         $insertQuery = "INSERT INTO resetPassword (user_id, pass_key, date_created, status) VALUES
-        ('{$id}', '{$safeHash}', NOW(), 'A')";
-        if (!$mysqli->query($insertQuery)) {
+        (?, ?, NOW(), 'A')";
+        $query = $this->con->prepare($insertQuery);
+        $query->execute(array($id, $safeHash));
+
+        if ($query->rowCount() !== 1) {
             error_log("Problem inserting resetPassword row for " . $id);
             $_SESSION['error'][] = "Unknown problem";
             return false;
         }
         $urlHash = urlencode($hash);
         $domain = $_SERVER['HTTP_HOST'];
-        $site = "/hai/reset";
+        if(isLocal()) {
+            $site = "/reset";
+        }else{
+            $site = "/projects/hai/reset";
+        }
         $resetPage = "/index.php";
         $fullURL = $domain . $site . $resetPage . "?user=" . $urlHash;
         //set up things related to the e-mail
@@ -169,30 +173,23 @@ class User {
             $_SESSION['error'][] = "Passwords don't match";
             return false;
         }
-        $mysqli = new mysqli(DBHOST, DBUSER, DBPASS, DB);
-        if ($mysqli->connect_errno) {
-                error_log("Cannot connect to MySQL: " . $mysqli->connect_error);
-                return false;
-        }
+
         $decodedHash = urldecode($formInfo['hash']);
-        $safeEmail = $mysqli->real_escape_string($formInfo['email']);
-        $safeHash = $mysqli->real_escape_string($decodedHash);
-        $query = "SELECT u.id as id, u.email as email FROM user u, resetPassword r WHERE " .
-            "r.status = 'A' AND r.pass_key = '{$safeHash}' " .
-            " AND u.email = '{$safeEmail}' " .
-            " AND u.id = r.user_id";
-        if (!$result = $mysqli->query($query)) {
-            $_SESSION['error'][] = "Unknown Error";
-            $this->errorType = "fatal";
-            error_log("database error: " . $formInfo['email'] . " - " . $formInfo['hash']);
-            return false;
-        } else if ($result->num_rows == 0) {
+        $safeEmail = filter_var($formInfo['email'], FILTER_SANITIZE_EMAIL);
+        //$safeHash = $mysqli->real_escape_string($decodedHash);
+        $query = "SELECT u.id as id, u.email as email FROM user u, resetPassword r WHERE 
+              r.status = 'A' AND r.pass_key = ? AND u.email = ? AND u.id = r.user_id";
+
+        $q = $this->con->prepare($query);
+        $q->execute(array($decodedHash, $safeEmail));
+
+        if ($q->rowCount() === 0) {
             $_SESSION['error'][] = "Link not active or user not found";
             $this->errorType = "fatal";
             error_log("Link not active: " . $formInfo['email'] . " - " . $formInfo['hash']);
             return false;
         } else {
-            $row = $result->fetch_assoc();
+            $row = $q->fetch(PDO::FETCH_ASSOC);
             $id = $row['id'];
             if ($this->_resetPass($id, $pass1)) {
                 return true;
@@ -206,16 +203,15 @@ class User {
     } //end function validateReset
     
     private function _resetPass($id, $pass) {
-        $mysqli = new mysqli(DBHOST, DBUSER, DBPASS, DB);
-        if ($mysqli->connect_errno) {
-            error_log("Cannot connect to MySQL: " . $mysqli->connect_error);
-            return false;
-        }
-        $safeUser = $mysqli->real_escape_string($id);
+
+        $safeUser = filter_var($id, FILTER_SANITIZE_NUMBER_INT);
         $newPass = password_hash($pass, PASSWORD_DEFAULT);
-        $safePass = $mysqli->real_escape_string($newPass);
-        $query = "UPDATE user SET password = '{$safePass}' WHERE id = '{$safeUser}'";
-        if (!$mysqli->query($query)) {
+
+        $query = "UPDATE user SET password = ? WHERE id = ?";
+        $q = $this->con->prepare($query);
+        $q->execute(array($newPass, $safeUser));
+
+        if ($q->rowCount() !== 1) {
             return false;
         } else {
             return true;
@@ -225,62 +221,62 @@ class User {
     //function @registerUser takes the array $_POST as argument from the register-process.php
     //or array provided by when registering a guest user (from a main - index page)
     function registerUser(array $userData) {
-        $mysqli = new mysqli(DBHOST, DBUSER, DBPASS, DB);
-        if ($mysqli->connect_errno) {
-            error_log("Cannot connect to MySQL: " . $mysqli->connect_error);
-            return false;
-        }
-        //$username = $mysqli->real_escape_string($_POST["username"]);
-        $username = $mysqli->real_escape_string($userData["username"]);
+
+        $username = filter_var($userData["username"], FILTER_SANITIZE_STRING);
 
 //check for an existing username
-        $findUser = "SELECT id FROM user WHERE username = '{$username}'";
-        $findResult = $mysqli->query($findUser);
-        $findRow = $findResult->fetch_assoc();
+        $findUser = "SELECT id FROM user WHERE username = ?";
+        $q = $this->con->prepare($findUser);
+        $q->execute(array($username));
+
+        $findRow = $q->fetch(PDO::FETCH_ASSOC);
         if (isset($findRow['id']) && $findRow['id'] != "") {
             $_SESSION["error"][] = "Account with the same username already exist.";
             return false;
         }
-        $findUser = $findResult = $findRow = null;
-//        $email = $mysqli->real_escape_string($_POST["email"]);
-        $email = $mysqli->real_escape_string($userData["email"]);
+
+        $email = filter_var($userData['email'], FILTER_SANITIZE_EMAIL);
 //check for an existing email
-        $findUser = "SELECT id FROM user WHERE email = '{$email}'";
-        $findResult = $mysqli->query($findUser);
-        $findRow = $findResult->fetch_assoc();
+        $findUser = "SELECT id FROM user WHERE email = ?";
+        $findResult = $this->con->prepare($findUser);
+        $findResult->execute(array($email));
+
+        $findRow = $findResult->fetch(PDO::FETCH_ASSOC);
         if (isset($findRow['id']) && $findRow['id'] != "") {
             $_SESSION["error"][] = "Account with the same e-mail already exist.";
             return false;
         }
-        $findUser = $findResult = $findRow = null;
-//        if (isset($_POST["name"])) {
+
+
         if (isset($userData["name"])) {
-//            $name = $mysqli->real_escape_string($_POST["name"]);
-//            $name = $mysqli->real_escape_string($userData["name"]);
             $name = filter_var($userData["name"], FILTER_SANITIZE_STRING);
         } else {
             $name = "Anonymous_user no: " . rand(1000000, 9999999);
         }
 
         //check for an existing name
-        $findUser = "SELECT id FROM user WHERE name = '{$name}'";
-        $findResult = $mysqli->query($findUser);
-        $findRow = $findResult->fetch_assoc();
+        $findUser = "SELECT id FROM user WHERE name = ?";
+        $findResult = $this->con->prepare($findUser);
+        $findResult->execute(array($name));
+
+        $findRow = $findResult->fetch(PDO::FETCH_ASSOC);
         if (isset($findRow['id']) && $findRow['id'] != "") {
             $_SESSION["error"][] = "Account with the same full name already exist.";
             return false;
         }
-//        $cryptedPassword = password_hash($_POST["password1"], PASSWORD_DEFAULT);
-        $cryptedPassword = password_hash($userData["password1"], PASSWORD_DEFAULT);
-        $password = $mysqli->real_escape_string($cryptedPassword);
 
-        $today = date('d.m.Y');
+        $password = password_hash($userData["password1"], PASSWORD_DEFAULT);
+
+
         $ip = $_SERVER['REMOTE_ADDR'];
 
-        $query = "INSERT INTO user (id, username, password, email, name, date_created, ip) VALUES
-    (Null, '{$username}', '{$password}', '{$email}', '{$name}', NOW(), '{$ip}')";
-        if ($mysqli->query($query)) {
-            $id = $mysqli->insert_id;
+        $query = "INSERT INTO user (id, username, password, email, name, date_created, ip) 
+                  VALUES(Null, ?, ?, ?, ?, NOW(), ?)";
+
+        $r = $this->con->prepare($query);
+        $r->execute(array($username, $password, $email, $name, $ip));
+
+        if ($r->rowCount() === 1) {
             $this->authenticate($username, $userData['password1']);
             return true;
         } else {
@@ -292,45 +288,34 @@ class User {
 
 
     function unregisterMe(){
-        $con = connectPDO();
-        $query = $con->prepare("DELETE FROM user WHERE id = ?");
+
+        $query = $this->con->prepare("DELETE FROM user WHERE id = ?");
         $query->execute(array($this->id));
         if($query->rowCount() === 1){
 
-            //TODO Unlog me also
-
-            $postquery = $con->prepare("INSERT INTO deleted (id_vezbac, ime, time) VALUES (?, ?, NOW())");
+            $postquery = $this->con->prepare("INSERT INTO deleted (id_vezbac, ime, time) VALUES (?, ?, NOW())");
             $postquery->execute(array($this->id, $this->name));
             if($postquery->rowCount() === 1) {
-                $_SESSION['message'] = "You have successfully unregistered.<br> \n You can logout now to complete the process.";
-                $con = null;
+                $_SESSION['message'] = "You have successfully unregistered.";
+                $this->logout();
                 return true;
             }
             return false;
         } else {
-            $con = null;
-            $_SESSION['error'] = "Unregistering can not be completed at the moment, please try later.";
+            $_SESSION['error'][] = "Unregistering can not be completed at the moment, please try later.";
             return false;
         }
     } //end unregisterMe
 
 
-    public function deleteOldGuestUsers(){
-
-        $con = connectPDO();
-        $q = "DELETE FROM user WHERE username LIKE 'Guest_%' AND (UNIX_TIMESTAMP(date_created) + 86400) <  UNIX_TIMESTAMP()";
-        $query = $con->query($q);
-        //$con = null;
+    public function deleteOldGuestUsers($time = 86400){
+        $q = "DELETE FROM user WHERE username LIKE 'Guest_%' AND (UNIX_TIMESTAMP(date_created) + $time) <  UNIX_TIMESTAMP()";
+        $query = $this->con->query($q);
         return $query->rowCount();
-
-        //TODO What about if someone is logged in?
-        //Need to check in database if the user exists...
-
     }
 
     public function checkIfUserExistInTable(){
-        $con = connectPDO();
-        $query = $con->query("SELECT COUNT(id) FROM user WHERE id = '$this->id'");
+        $query = $this->con->query("SELECT COUNT(id) FROM user WHERE id = '$this->id'");
         $r = $query->fetchColumn();
 
         if(+$r === 1){
@@ -342,12 +327,11 @@ class User {
     }
 
 
+    function __destruct()
+    {
+        $this->con = null;
+    }
 
 } //end class User
-}catch(Exception $e){
-    error_message("We are sorry, there was some error in the process. 
-    Please try again or wait for our personal to fix this issue." ,
-        "Error in User class: " . $e->getMessage() . " on line: " . $e->getLine());
 
-}
 ?>

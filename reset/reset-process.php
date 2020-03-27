@@ -1,8 +1,8 @@
 <?php
-require_once('functions.php');
-//prevent access if they haven't submitted the form.
+require_once('../functions.php');
+
 if (!isset($_POST['submit'])) {
-    die(header("Location: ../reset"));
+    die(header("Location:" . BASE_URL . "/reset"));
 }
 
 $_SESSION['formAttempt'] = true;
@@ -21,7 +21,7 @@ if (!filter_var($_POST['email'],FILTER_VALIDATE_EMAIL)) {
     $_SESSION['error'][] = "Invalid e-mail address";
 }
 if (count($_SESSION['error']) > 0) {
-    die(header("Location: ../reset"));
+    die(header("Location:" . BASE_URL . "/reset"));
 } else {
     $user = new User;
     if ($user->validateReset($_POST)) {
@@ -31,7 +31,7 @@ if (count($_SESSION['error']) > 0) {
         if ($user->errorType = "nonfatal") {
             $_SESSION['hash'] = $_POST['hash'];
             $_SESSION['error'][] = "There was a problem with the form.";
-            die(header("Location: ../reset"));
+            die(header("Location:" . BASE_URL . "/reset"));
         } else {
             $_SESSION['error'][] = "There was a problem with the form.";
             die(header("Location: emailpass.php"));
