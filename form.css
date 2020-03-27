@@ -1,0 +1,139 @@
+body {
+    background-color: darkblue;
+    background-image: url("images/ai_bg.jpg");
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-position: center top;
+    background-size: cover;
+    text-align:center;
+    //filter: blur(5px);
+    font-family: 'Spartan', sans-serif, Calibri;
+}
+#title {
+    font-size:400%;
+    font-weight:700;
+    color: #119;
+    font-stretch: expanded;
+    text-shadow: 8px 8px 8px #bbb;
+}
+
+#left, #right{
+    display: inline-block;
+    width: 45%;
+    min-width: 250px;
+    padding-bottom: 1em;
+}
+
+form {
+    position: absolute;
+    top:50%;
+    left:50%;
+    transform: translate(-50%, -50%);
+    width: 80%;
+    max-width: 800px;
+    margin: auto;
+    vertical-align:middle;
+    }
+form fieldset{
+    padding: 1em;
+    background-color: rgba(255, 255, 255, 0.8);
+    border: 2px solid #ddd;
+    border-radius: 10px;
+}
+form label {
+    width: 80%;
+    /*margin-right: 1em;
+    margin-top: 10px;
+    float: left;
+    clear: left;
+    text-align: right; */
+    margin: auto;
+    display: block;
+    }
+
+form input, form select, form textarea {
+    width: 15em;
+    margin: 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    height: 2em;
+    padding: 6px;
+    vertical-align: middle;
+    clear: both;
+}
+
+form textarea {
+    width: 20em;
+    height: auto;
+}
+form input:focus, form select:focus, form textarea:focus {
+    outline: none;
+    border-color: #aaf;
+    box-shadow: 0 0 12px #aaf;
+}
+/*:required {
+    border: 1px solid red;
+} */
+
+#submit {
+   /* margin-left: 20em; */
+    margin: auto;
+    margin-top: 1em;
+    padding: 0.5em;
+    /*height: 3em;*/
+    background-color: green;
+    vertical-align: middle;
+    clear: both;
+    }
+
+@media (max-width: 700px) {
+/* @media only screen and (max width:750px){ */
+    form {
+        width: 100%;
+        max-width: 100%;
+        margin: 0;
+        padding: 0;
+        text-align:center;
+    }
+    form input, form select, form textarea  {
+        width: 90%;
+        margin: auto;
+        margin-bottom: 1em;
+    }
+    form label {
+        text-align: center;
+        width: 100%;
+        margin: auto;
+        float: none;
+    }
+    #submit {
+        margin: auto;
+        /*margin-top: 2em;*/
+        width: 80%;
+        height: 3em;
+        vertical-align: middle;
+        border: 1px solid black;
+    }
+    #title {
+        font-size:200%;
+        font-weight:600;
+    }
+}
+
+@media (orientation: portrait) {
+    body {
+    background-image: url("images/ai_bg2.jpg");
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-position: center top;
+    }
+}
+.errorClass {
+    background-color: #CC6666;
+    }
+#errorDiv {
+    color: red;
+    }
+.errorFeedback {
+    display: none;
+    }

@@ -1,0 +1,16 @@
+.message{
+    position: absolute;
+    top:2em;
+    left:50%;
+    transform: translate(-50%,0);
+    padding: 10px;
+    background-color: rgba(50, 250, 50, 1);
+    color: white;
+    max-width: 800px;
+    box-shadow: 10px 10px 15px #333;
+    border-radius: 10px;
+}
+
+.error{
+    background-color: rgba(250, 50, 50, 1);
+}
