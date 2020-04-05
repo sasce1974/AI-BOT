@@ -1,19 +1,33 @@
 
 body {
-  font-family: 'Spartan', sans-serif, Calibri;
-  background: lightblue url("https://i.pinimg.com/originals/3c/24/46/3c24462450c2a902bf7e18f3d9aada81.jpg");
-  background-size: cover;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  height: 100vh;
-  color: #ffffff;
-  overflow: hidden;
+    font-family: 'Roboto', sans-serif, Calibri;
+    background: lightblue url("https://i.pinimg.com/originals/3c/24/46/3c24462450c2a902bf7e18f3d9aada81.jpg");
+    background-size: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    /*height: 100vh;*/
+    color: #ffffff;
+    overflow: hidden;
     margin: 0;
+    max-width: 1000px;
 }
+
+#logo{
+    position: absolute;
+    top: -0.7rem;
+    left: 1rem;
+    width: 60px;
+    height: auto;
+}
+#logo img{
+    width: 100%;
+    height: auto;
+}
+
 #messenger{
     position: absolute;
-    top: 10vh;
+    top: 2em;
     left: 50%;
     -webkit-transform: translate(-50%);
     -moz-transform: translate(-50%);
@@ -25,9 +39,10 @@ body {
     margin-top: 15px;
     padding: 0;
     min-width: 200px;
-    width: 100%;
+    width: 98%;
     max-width: 800px;
-    height: 85vh;
+    height: 90%;
+    max-height: 800px;
     display: flex;
     flex-direction: column;
 }
@@ -36,11 +51,13 @@ body {
     height:100%;
     overflow-y: auto;
     border-radius: 5px;
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
     background-color: #eee;
     background-color: rgba(255,255,255,0.2);
     word-wrap: normal;
     color: #000;
-
+    vertical-align: bottom;
 
 }
 #messages::-webkit-scrollbar {
@@ -57,39 +74,45 @@ body {
 #messages::-webkit-scrollbar-thumb:hover {
     background: #555;
 }
-
-.me{
-    text-align: left;
-    /*color: #11a;*/
-    background-color: #dfd;
-    float: left;
+.message_bubble{
     clear: both;
-    max-width: 270px;
-    border-radius: 10px;
-    margin: 10px;
-    padding: 10px;
-}
-.hai{
-    text-align: right;
-    /*color: #1a1;*/
-    background-color: #fdd;
-    float: right;
-    clear: both;
+    min-width: 1em;
     max-width: 270px;
     border-radius: 20px;
     margin: 10px;
+    padding: 5px 8px;
+    word-break: break-word;
+    overflow: hidden;
+    transition: all ease-out 0.5s;
+}
+.squized{
+    height: 0;
+    width: 0;
+    padding: 0;
+}
+.me{
+    text-align: left;
+    color: #fff;
+    background-color: #5d5;
+    float: left;
+    border-top-left-radius: 0;
+}
+.hai{
+    text-align: right;
+    color: #fff;
+    background-color: #55f;
+    float: right;
     margin-bottom: 1.5em;
-    padding: 10px;
+    border-bottom-right-radius: 0;
 }
 #hai_status{
-    color:#999;
+    color:#ccc;
     position: absolute;
     bottom: 3em;
     right: 1em;
     margin-right: 1em;
-    /*font-size: small;*/
-
 }
+
 #welcome{
     position: absolute;
     top: 0;
@@ -116,34 +139,47 @@ form{
 form input {
     display: inline-block;
     height: 2em;
-    width: 80%;
-    border-radius:5px;
+    width: 100%;
+    border-radius:20px;
     margin-right: 10px;
     padding: 3px 10px;
 }
 form input:focus{
-    background-color: #ddffdd;
+    outline: none;
+    /*background-color: #ddffdd;*/
 }
 form button{
     display: inline-block;
     /*height: 2em;*/
-    padding: 3px 10px;
-    width: 20%;
-    min-width: 4em;
-    border-radius: 5px;
+    padding: 6px 9px;
+    /*width: 20%;*/
+
+    border-radius: 50%;
     font-size: 110%;
 }
-@media only screen and (max-width: 800px) {
-    form{
-        /*width: 100%;*/
+@media only screen and (max-width: 700px) {
+    *{
+        /*font-size: 105%;*/
     }
-    #messages{
-        /*height: 350px;*/
+    body{
+
+    }
+    form input{
+        height: 2.5em;
+    }
+    #messenger{
+        height: 90%;
+    }
+    #hai_status{
+        bottom: 4em;
     }
 }
 
 /* loading dots */
-
+.loading{
+    font-size: 200%;
+    font-weight: bold;
+}
 .loading:after {
     content: ' .';
     animation: dots 1s steps(5, end) infinite;

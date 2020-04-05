@@ -8,9 +8,9 @@ try {
 		$query = $con->query("SELECT * FROM user WHERE email = '$email'");
 		//$result = $query->fetchAll(PDO::FETCH_ASSOC);
 		if($query->rowCount()>0){
-			print "<span style='color:#f55;font-size:80%;'>This email is taken &nbsp;&#x2718;</span>";
+			print "<span style='color:#f55;'>This email is taken &nbsp;&#x2718;</span>";
 		}else{
-			print "<span style='color:#3b3;font-size:80%;'>This email is aviable &nbsp;&#x2714;</span>";
+			print "<span style='color:#3b3;'>This email is available &nbsp;&#x2714;</span>";
 		}
 		$con = $email = $query = null;
 	}
@@ -20,9 +20,9 @@ try {
 		$query = $con->query("SELECT * FROM user WHERE username = '$user'");
 		//$result = $query->fetchAll(PDO::FETCH_ASSOC);
 		if($query->rowCount()>0){
-			print "<span style='color:#f55;font-size:80%;'>This username is taken &nbsp;&#x2718;</span>";
+			print "<span style='color:#f55;'>This username is taken &nbsp;&#x2718;</span>";
 		}else{
-			print "<span style='color:#3b3;font-size:80%;'>This username is aviable &nbsp;&#x2714;</span>";
+			print "<span style='color:#3b3;'>This username is available &nbsp;&#x2714;</span>";
 		}
 		$con = $user = $query = null;
 	}

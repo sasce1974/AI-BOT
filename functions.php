@@ -2,6 +2,7 @@
 session_start();
 require_once("dbcon.php");
 require_once("UserClass.php");
+require_once BASE_URI . "/vendor/autoload.php";
 
 function connectPDO(){
     try {

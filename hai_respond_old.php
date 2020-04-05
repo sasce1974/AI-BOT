@@ -5,28 +5,9 @@ if (!$user->isLoggedIn) {
     die(header("Location: login/"));
 }
 
-$questions = array("who","why","what","how","where","do","did","are","does","didn't",
-                    "doesn't","aren't","when","can","may","have","is","which","should","would");
-$questions = implode("|",$questions);
-print $questions . "<hr>";
-
-function isQuestion($sentence){
-    global $questions;
-    return (preg_match("/\b^($questions)\b/i", $sentence) || strpos($sentence, "?"));
-}
-
-print isQuestion("Wahy? is this important!");
-
-$negations = array("not","don\'t","didn't","aren't","isn't","dont","didnt","arent","can't",
-                    "no","neither", "none","never","nah");
-$negations = implode("|", $negations);
-print "<br><hr>" . $negations;
-
-
-//checking if the input is a question
+    //checking if the input is a question
     function checkQuestion($sen){
-        global $questions;
-        preg_match_all("/\b(^$questions)\b/i",$sen,$isQuestion);
+        preg_match_all("/\b(^who|^why|^what|^how|^where|^Do|^Did|^Are|^Does|^Didn't|^Doesn't|^Aren't|^when|^can|^may|^have|^is|^which)\b/i",$sen,$isQuestion);
         if((min($isQuestion) && max($isQuestion)) or strpos($sen, "?")) {
             $question = 1;
         }else{
@@ -115,11 +96,7 @@ print "<br><hr>" . $negations;
         //$question = checkQuestion($sentance);
         //$negation = checkNegation($sentance);
         //$subject = checkSubject($sentance);
-  /*
-   *
-   *
-   * HERE STARTS OLD LOGIC
-
+        
         if($question == 1){
             $question_query = "AND q_a = 0"; //looking for NOT questions
         }else{
@@ -140,7 +117,9 @@ print "<br><hr>" . $negations;
         
         $rows=array();
         foreach($new_words as $tag){
-
+        /*    $respond_query = $con->prepare("SELECT sentance FROM responds WHERE tags LIKE ? OR tags LIKE ?
+            OR sentance LIKE ? OR sentance LIKE ? $question_query $negation_query $subject_query");
+            $respond_query->execute(array("%$sentance%","%$tag%","%$sentance%","%$tag%")); */
             $respond_query = $con->prepare("SELECT sentance FROM responds WHERE tags LIKE ? OR sentance LIKE ?
             {$question_query} {$negation_query} {$subject_query}");
             $respond_query->execute(array("%$tag%","%$tag%"));
@@ -148,7 +127,9 @@ print "<br><hr>" . $negations;
             $rows[] = $row;
         }
         foreach($new_words as $tag){
-
+         /*   $respond_query = $con->prepare("SELECT comment FROM inserted WHERE tags LIKE ? OR tags LIKE ?
+            OR comment LIKE ? OR comment LIKE ? $question_query $negation_query $subject_query");
+            $respond_query->execute(array("%$sentance%","%$tag%","%$sentance%","%$tag%")); */
             $respond_query = $con->prepare("SELECT comment FROM inserted WHERE tags LIKE ?
             OR comment LIKE ? {$question_query} {$negation_query} {$subject_query}");
             $respond_query->execute(array("%$tag%","%$tag%"));
@@ -178,10 +159,18 @@ print "<br><hr>" . $negations;
                //print_r($chat); 
                 if($chat[1]==0){
                     if($chat[3]!=""){
-
+                       /* print "<div class='hai' style='font-size:50%;'>HAI says: $num_records<br>";
+                        for($i=0;$i<$num_records;$i++){
+                            print $choice[$i] . "<br>";
+                        }
+                        print "</div>"; */
                         print "<div class='message_bubble hai'>" . $chat[3] . "</div>";
                     }else{
-
+                      /*  print "<div class='hai' style='font-size:50%;'>HAI says: $num_records<br>";
+                        for($i=0;$i<$num_records;$i++){
+                            print $choice[$i] . "<br>";
+                        }
+                        print "</div>"; */
                         print "<div class='message_bubble hai'>I don't understand that!</div>";
                     }
                 }elseif($chat[1]!=0){
@@ -201,7 +190,4 @@ print "<br><hr>" . $negations;
 //}catch(PDOException $e){
 //    print "Error: " . $e->getMessage();
 //}
-
-*/
-
 ?>

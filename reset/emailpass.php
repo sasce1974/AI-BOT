@@ -6,7 +6,7 @@ require_once("../functions.php");
 <head>
   <title>Password recovery</title>
 
-  <link rel="stylesheet" type="text/css" href="../form.css">
+  <link rel="stylesheet" type="text/css" href="../css/form.css">
 </head>
 <body>
     <form id="passRecoveryForm" method="POST" action="email-process.php">

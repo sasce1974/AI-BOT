@@ -1,13 +1,16 @@
+
 body {
     background-color: darkblue;
-    background-image: url("images/ai_bg.jpg");
+    background-image: url("../images/ai_bg.jpg");
     background-repeat: no-repeat;
     background-attachment: fixed;
     background-position: center top;
     background-size: cover;
     text-align:center;
     //filter: blur(5px);
-    font-family: 'Spartan', sans-serif, Calibri;
+    font-family: 'Roboto', sans-serif, Calibri;
+    margin: 0;
+    padding: 0;
 }
 #title {
     font-size:400%;
@@ -29,7 +32,7 @@ form {
     top:50%;
     left:50%;
     transform: translate(-50%, -50%);
-    width: 80%;
+    width: 50%;
     max-width: 800px;
     margin: auto;
     vertical-align:middle;
@@ -39,6 +42,7 @@ form fieldset{
     background-color: rgba(255, 255, 255, 0.8);
     border: 2px solid #ddd;
     border-radius: 10px;
+    margin: 0;
 }
 form label {
     width: 80%;
@@ -48,22 +52,22 @@ form label {
     clear: left;
     text-align: right; */
     margin: auto;
-    display: block;
+    /*display: block;*/
     }
 
 form input, form select, form textarea {
-    width: 15em;
+    /*width: 15em;*/
     margin: 10px;
     border: 1px solid #ddd;
     border-radius: 8px;
-    height: 2em;
+    height: 2.2em;
     padding: 6px;
     vertical-align: middle;
-    clear: both;
+    /*clear: both;*/
 }
 
 form textarea {
-    width: 20em;
+    /*width: 20em;*/
     height: auto;
 }
 form input:focus, form select:focus, form textarea:focus {
@@ -79,12 +83,63 @@ form input:focus, form select:focus, form textarea:focus {
    /* margin-left: 20em; */
     margin: auto;
     margin-top: 1em;
-    padding: 0.5em;
-    /*height: 3em;*/
+    padding: 1em;
+    height: 3em;
+    min-width: 5em;
+    color: #fff;
     background-color: green;
     vertical-align: middle;
     clear: both;
+    font-size: large;
     }
+
+.input_group{
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+}
+
+.input-subgroup{
+    width: 70%;
+    display: flex;
+}
+
+.input_group .input-subgroup input, .input_group label{
+    word-break: keep-all;
+    width: 100%;
+
+}
+.input_group label{
+    width: 30%;
+    text-align: right;
+}
+
+.input-subgroup{
+    position: relative;
+}
+
+#user_check, #email_check{
+    position: absolute;
+    width: 100%;
+    left: 0;
+    bottom: 0.7rem;
+    font-size: 70%;
+    /*display: block;*/
+
+}
+
+#logo{
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    width: 100px;
+    height: auto;
+}
+#logo img{
+    width: 100%;
+    height: auto;
+}
+
 
 @media (max-width: 700px) {
 /* @media only screen and (max width:750px){ */
@@ -94,6 +149,9 @@ form input:focus, form select:focus, form textarea:focus {
         margin: 0;
         padding: 0;
         text-align:center;
+        top:15%;
+        transform: translate(-50%, 0);
+        font-size: 110%;
     }
     form input, form select, form textarea  {
         width: 90%;
@@ -105,6 +163,10 @@ form input:focus, form select:focus, form textarea:focus {
         width: 100%;
         margin: auto;
         float: none;
+    }
+    #loginForm{
+        top:5%;
+        margin: 0;
     }
     #submit {
         margin: auto;
@@ -118,11 +180,25 @@ form input:focus, form select:focus, form textarea:focus {
         font-size:200%;
         font-weight:600;
     }
+
+    .input_group{
+        flex-direction: column;
+    }
+
+    .input-subgroup{
+        width: 100%;
+    }
+
+    .input_group input, .input_group label{
+        width: 90%;
+        text-align: center;
+    }
+
 }
 
 @media (orientation: portrait) {
     body {
-    background-image: url("images/ai_bg2.jpg");
+    background-image: url("../images/ai_bg2.jpg");
     background-repeat: no-repeat;
     background-attachment: fixed;
     background-position: center top;

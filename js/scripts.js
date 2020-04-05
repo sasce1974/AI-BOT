@@ -11,6 +11,25 @@ function errorHandler(message, url, line)  {
     return true;
 }
 
+$(document).ready(function(){
+    $.post("respondController.php", {'all_conversation':'all'}, showAll);
+});
+
+function showAll(data, textStatus) {
+
+    $("#messages").html(data);
+    scrollDown();
+
+
+    //   $("#messages").append(data);
+    // var n = $("#messages div").length;
+    //   $("#messages").append(n);
+    $("#input").val("");
+
+    //   removeMessages();
+}
+
+
 
 // On "Enter" key or "Send" button, send the message
 $("#input").keypress(function(e){
@@ -22,7 +41,7 @@ $("#input").keypress(function(e){
 function sendMessage() {
     var message = $("#input").val().trim();
     if(message !=="") {
-        $.post("hai_respond.php", {"from_user": "user", "input": message}, showMe);
+        $.post("respondController.php", {"from_user": "user", "input": message}, showMe);
     }
 }
 
@@ -43,16 +62,34 @@ function writing(){
 }
 */
 function showMe(data, textStatus) {
-    $("#hai_status").html("<span class='loading'>Writing</span>");
+    $("#hai_status").html("<span class='loading'></span>");
+
+    if(data == "<div class='message_bubble hai'>BYEBYE</div>"){
+        document.location = '/login/logout.php';
+    }
+
+
+    $("#messages").append(data);
+    $("#messages").children(".me").removeClass('squized');
+    scrollDown();
+    setTimeout(squiz, responseLength(data) * 30);
+    function squiz (){
+        $("#hai_status").html("");
+        $("#messages").children(".hai").removeClass('squized');
+        scrollDown();
+    }
 
     function responseLength(data) {
-        return (data.length - 31) - data.lastIndexOf("<div class='hai'>");
+        //var length = (data.length - 31) - data.lastIndexOf("<div class='message_bubble hai'>");
+        return (data.length > 200) ? 200 : data.length;
     }
-    setTimeout(function () {
+
+    /*setTimeout(function () {
         $("#hai_status").html("");
         $("#messages").html(data);
+        $("#messages").append(data);
         scrollDown();
-    }, responseLength(data) * 200);
+    }, responseLength(data) * 200);*/
 
     //   $("#messages").append(data);
     // var n = $("#messages div").length;
@@ -80,3 +117,16 @@ if(messages.innerHTML != ""){
         $(".message").fadeOut(1500);
     }, 5000);
 }
+
+
+/** Register the Service Worker */
+/*
+
+if ("serviceWorker" in navigator) {
+    window.addEventListener("load", function() {
+        navigator.serviceWorker
+            .register("/serviceWorker.js")
+            .then(res => console.log("service worker registered"))
+            .catch(err => console.log("service worker not registered", err))
+    })
+}*/

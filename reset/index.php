@@ -17,7 +17,7 @@ if ($invalidAccess) {
 <!doctype html>
 <html>
 <head>
-<link rel="stylesheet" type="text/css" href="../form.css">
+<link rel="stylesheet" type="text/css" href="../css/form.css">
 <title>Reset Password</title>
 </head>
 <body>

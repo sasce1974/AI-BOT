@@ -73,6 +73,6 @@ var messages = document.getElementsByClassName('message');
 if(messages.innerHTML != ""){
     setTimeout(function(){
         messages.innerHTML = "";
-        $(".message").fadeOut(1500);
-    }, 5000);
+        $(".message").fadeOut(2500);
+    }, 6000);
 }

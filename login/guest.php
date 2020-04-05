@@ -7,61 +7,57 @@
  */
 
 require_once("../functions.php");
-$user = new User;
+require_once ("../Guest.php");
 
+$user = new User;
+$guest = new Guest();
+
+//If there is no user logged in
 
 if(!$user->isLoggedIn){
 
-    $new_guest_user_data = createGuestUser();
+    //method createGuestUser creates and returns guest data @array|boolean
+
+    $new_guest_user_data = $guest->createGuestUser();
+
+    //if the user data is created and successfully registered...
 
     if($new_guest_user_data && $user->registerUser($new_guest_user_data)){
-        //login this user
+
+        //if the login of this user is successful...
+
         if($user->authenticate($new_guest_user_data['username'], $new_guest_user_data['password1'])){
+
+            //initialize User isGuest property as true and redirect to index.php ...
 
             $_SESSION['isGuest'] = $user->isGuest = true;
             $_SESSION['message'][] = "You are signed in as a " . $user->username;
             header("Location:" . BASE_URL);
             exit();
         }else{
+
+            //redirect to login if not successful authentication.
+            //this should not happen normally...
+
             $_SESSION['error'][] = "Cannot log in the guest!";
             header("Location:" . BASE_URL . "/login/");
             exit();
         }
     }else{
+
+        //redirect to register again if not successful registration...
+        //this might happen in case no connection to database.
+
         $_SESSION['error'][] = "Error registering the guest user. Please try again.";
         header("Location:" . BASE_URL . "/login/");
         exit();
     }
 }else{
+
+    //if user is already logged in, just redirect directly to index.php
+
     header("Location:" . BASE_URL);
     exit();
-}
-
-
-
-function createGuestUser(){
-    //count guest users from user table to give the next guest number
-    $con = connectPDO();
-    $ip = $_SERVER['REMOTE_ADDR'];
-    $q = "SELECT COUNT(id) FROM user WHERE ip = '$ip'";
-    $query = $con->query($q);
-    $users_from_same_ip = $query->fetchColumn();
-    if($users_from_same_ip > 5 && ($ip != '127.0.0.1')){
-        $_SESSION['error'][] = 'To many guest users from same address.';
-        return false;
-    }
-    $next_number = rand(10, 100000);
-    $data = array();
-    $data['username'] = 'Guest_' . $next_number;
-    $data['email'] = 'guest_' . $next_number . '@temp.com';
-    $data['name'] = 'Guest_' . $next_number;
-    $data['password1'] = 'noPassword';
-
-    return $data;
-
-    //how about the messages??? they should be deleted or not?
-
-
 }
 
 

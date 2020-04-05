@@ -7,13 +7,14 @@ class User {
     public $name;
     public $date_created;
     public $ip;
+    public $bad_words;
     public $isLoggedIn = false;
 
     public $isGuest = false;
 
     public $errorType = "fatal";
 
-    private $con = null;
+    protected $con = null;
 
     
     function __construct() {
@@ -60,6 +61,7 @@ class User {
         $this->date_created = $row['date_created'];
         $this->name = $row['name'];
         $this->ip = $row['ip'];
+        $this->bad_words = $row['bad_words'];
         $this->isLoggedIn = true;
 
         $this->_setSession();
@@ -76,6 +78,7 @@ class User {
         $_SESSION['date_created'] = $this->date_created;
         $_SESSION['name'] = $this->name;
         $_SESSION['ip'] = $this->ip;
+        $_SESSION['bad_words'] = $this->bad_words;
         $_SESSION['isLoggedIn'] = $this->isLoggedIn;
         $_SESSION['isGuest'] = $this->isGuest;
     } //end function setSession
@@ -90,6 +93,7 @@ class User {
         $this->date_created = $_SESSION['date_created'];
         $this->name = $_SESSION['name'];
         $this->ip = $_SESSION['ip'];
+        $this->bad_words = $_SESSION['bad_words'];
         $this->isLoggedIn = $_SESSION['isLoggedIn'];
         $this->isGuest = $_SESSION['isGuest'];
     } //end function initUser
@@ -270,8 +274,8 @@ class User {
 
         $ip = $_SERVER['REMOTE_ADDR'];
 
-        $query = "INSERT INTO user (id, username, password, email, name, date_created, ip) 
-                  VALUES(Null, ?, ?, ?, ?, NOW(), ?)";
+        $query = "INSERT INTO user (id, username, password, email, name, date_created, ip, bad_words) 
+                  VALUES(Null, ?, ?, ?, ?, NOW(), ?, 0)";
 
         $r = $this->con->prepare($query);
         $r->execute(array($username, $password, $email, $name, $ip));
