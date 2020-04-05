@@ -1,10 +1,10 @@
 # ignore files or folders from being committed
 
-.idea/
+.idea
 dbcon.php
 index_old.php
 index_old.html
 hai_respond_old1.php
 hai_respond.php
-test/*
-some_text/
+test
+some_text
