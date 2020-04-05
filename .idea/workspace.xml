@@ -2,8 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="805d6520-e2bb-4af7-abf8-6c3716611eb7" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/login/login-process.php" beforeDir="false" afterPath="$PROJECT_DIR$/login/login-process.php" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -35,7 +34,7 @@
           <entry key="html" value="82" />
           <entry key="js" value="1609" />
           <entry key="json" value="33" />
-          <entry key="php" value="16501" />
+          <entry key="php" value="16508" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
@@ -44,7 +43,7 @@
           <entry key="HTML" value="82" />
           <entry key="JSON" value="33" />
           <entry key="JavaScript" value="1609" />
-          <entry key="PHP" value="16475" />
+          <entry key="PHP" value="16482" />
           <entry key="PLAIN_TEXT" value="43" />
           <entry key="SQL" value="26" />
         </counts>
@@ -56,7 +55,7 @@
           <entry key="html" value="4" />
           <entry key="js" value="8" />
           <entry key="json" value="1" />
-          <entry key="php" value="56" />
+          <entry key="php" value="57" />
           <entry key="rnc" value="1" />
         </counts>
       </usages-collector>
@@ -66,7 +65,7 @@
           <entry key="HTML" value="4" />
           <entry key="JSON" value="1" />
           <entry key="JavaScript" value="8" />
-          <entry key="PHP" value="56" />
+          <entry key="PHP" value="57" />
           <entry key="PLAIN_TEXT" value="2" />
           <entry key="RNG Compact" value="1" />
         </counts>
@@ -89,11 +88,20 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/.gitignore">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="176">
               <caret line="8" column="4" lean-forward="true" selection-start-line="8" selection-start-column="4" selection-end-line="8" selection-end-column="4" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/login/login-process.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="306">
+              <caret line="24" column="10" selection-start-line="24" selection-start-column="10" selection-end-line="24" selection-end-column="10" />
             </state>
           </provider>
         </entry>
@@ -124,7 +132,6 @@
     <option name="CHANGED_PATHS">
       <list>
         <option value="$PROJECT_DIR$/../mbsenergy/error.php" />
-        <option value="$PROJECT_DIR$/login/login-process.php" />
         <option value="$PROJECT_DIR$/a.php" />
         <option value="$PROJECT_DIR$/login/a.php" />
         <option value="$PROJECT_DIR$/inc/messages.inc.php" />
@@ -157,6 +164,7 @@
         <option value="$PROJECT_DIR$/index.php" />
         <option value="$PROJECT_DIR$/login/guest.php" />
         <option value="$PROJECT_DIR$/.gitignore" />
+        <option value="$PROJECT_DIR$/login/login-process.php" />
       </list>
     </option>
   </component>
@@ -289,15 +297,16 @@
       <workItem from="1585366938797" duration="21161000" />
       <workItem from="1585930505077" duration="3405000" />
       <workItem from="1585983795542" duration="42662000" />
-      <workItem from="1586071460937" duration="16523000" />
+      <workItem from="1586071460937" duration="17368000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="168579000" />
+    <option name="totallyTimeSpent" value="169424000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1382" height="744" extended-state="6" />
+    <editor active="true" />
     <layout>
       <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.17776097" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
@@ -312,7 +321,7 @@
       <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
       <window_info anchor="bottom" id="Database Changes" order="8" show_stripe_button="false" />
       <window_info anchor="bottom" id="Version Control" order="9" show_stripe_button="false" />
-      <window_info active="true" anchor="bottom" id="Terminal" order="10" visible="true" weight="0.51311475" />
+      <window_info active="true" anchor="bottom" id="Terminal" order="10" visible="true" weight="0.26557377" />
       <window_info anchor="bottom" id="Event Log" order="11" side_tool="true" weight="0.3295082" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
@@ -357,13 +366,6 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/../portfolio/views/css/my_custom_style.css" />
     <entry file="file://$PROJECT_DIR$/../portfolio/register/register-process.php" />
-    <entry file="file://$PROJECT_DIR$/login/login-process.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="262">
-          <caret line="39" column="73" lean-forward="true" selection-start-line="39" selection-start-column="73" selection-end-line="39" selection-end-column="73" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/login/logout.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="66">
@@ -590,6 +592,13 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="176">
           <caret line="8" column="4" lean-forward="true" selection-start-line="8" selection-start-column="4" selection-end-line="8" selection-end-column="4" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/login/login-process.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="306">
+          <caret line="24" column="10" selection-start-line="24" selection-start-column="10" selection-end-line="24" selection-end-column="10" />
         </state>
       </provider>
     </entry>

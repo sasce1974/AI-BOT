@@ -22,8 +22,8 @@ $username= filter_input(INPUT_POST,"username", FILTER_SANITIZE_STRING);
 $pass=filter_input(INPUT_POST, "password", FILTER_SANITIZE_STRING);
 $ip=$_SERVER['REMOTE_ADDR'];
 $query = $con->prepare("INSERT INTO loginatempt (id, username, ip, time) VALUES 
-(NULL , ?, ?, ?, NOW())");
-$result = $query->execute(array($username, $pass, $ip));
+(NULL , ?, ?, NOW())");
+$result = $query->execute(array($username, $ip));
 $con= $query = null;
 unset($con, $query);
 
